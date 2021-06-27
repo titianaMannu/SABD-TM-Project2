@@ -1,0 +1,130 @@
+{
+  "nodes" : [ {
+    "id" : 1,
+    "type" : "Source: Custom Source",
+    "pact" : "Data Source",
+    "contents" : "Source: Custom Source",
+    "parallelism" : 8
+  }, {
+    "id" : 2,
+    "type" : "Flat Map",
+    "pact" : "Operator",
+    "contents" : "Flat Map",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 1,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 3,
+    "type" : "stream-source",
+    "pact" : "Operator",
+    "contents" : "stream-source",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 2,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 4,
+    "type" : "stream-query1-decoder",
+    "pact" : "Operator",
+    "contents" : "stream-query1-decoder",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 3,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 5,
+    "type" : "filter-per-western-sea",
+    "pact" : "Operator",
+    "contents" : "filter-per-western-sea",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 4,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 6,
+    "type" : "compute-cell-id",
+    "pact" : "Operator",
+    "contents" : "compute-cell-id",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 5,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 8,
+    "type" : "query1-weekly-window-avg",
+    "pact" : "Operator",
+    "contents" : "query1-weekly-window-avg",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 6,
+      "ship_strategy" : "HASH",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 9,
+    "type" : "Map",
+    "pact" : "Operator",
+    "contents" : "Map",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 8,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 12,
+    "type" : "query1-monthly-window-avg",
+    "pact" : "Operator",
+    "contents" : "query1-monthly-window-avg",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 6,
+      "ship_strategy" : "HASH",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 13,
+    "type" : "Map",
+    "pact" : "Operator",
+    "contents" : "Map",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 12,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 10,
+    "type" : "Sink: query1-weekly-avg-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query1-weekly-avg-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 9,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 14,
+    "type" : "Sink: query1-monthly-avg-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query1-monthly-avg-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 13,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  } ]
+}
