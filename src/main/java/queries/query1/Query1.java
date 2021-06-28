@@ -7,6 +7,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.WindowStagger;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
+import queries.operators.QueryOperators;
 import queries.windows.MonthlyTumblingEventTimeWindow;
 import queries.windows.WeeklyTumblingEventTimeWindow;
 import utils.ConfStrings;
@@ -18,20 +19,20 @@ public class Query1 {
     public static void buildTopology(DataStream<Tuple2<Long, String>> source) {
         // parse tuples to obtain the needed information and ignoring all malformed lines;
         DataStream<ShipInfo> stream = source
-                .flatMap(Query1Operators.parseInputFunction())
+                .flatMap(QueryOperators.parseInputFunction())
                 .name("stream-query1-decoder")
-                .filter(Query1Operators.filterRegion())
+                .filter(QueryOperators.filterRegion())
                 .name("filter-per-western-sea"); // only western mediterranean
 
         DataStream<ShipInfo> areaKeyStreamed = stream
-                .map(Query1Operators.computeCellId()).name("compute-cell-id");
+                .map(QueryOperators.computeCellId()).name("compute-cell-id");
 
         //weekly window
         areaKeyStreamed.keyBy(ShipInfo::getCellId) // stream keyed by cellID
                 .window(new WeeklyTumblingEventTimeWindow(7, 4, WindowStagger.ALIGNED)) //weekly tumbling window
                 .aggregate(new ShipAvgAggregator(), new ShipAvgProcessWindow())
                 .name("query1-weekly-window-avg")
-                .map(Query1Operators.ExportOutcomeToString())
+                .map(QueryOperators.ExportQuery1OutcomeToString())
                 // write the output string to the correct topic in kafka
                 .addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY1_WEEKLY_OUT_TOPIC.getString(),
                         new FlinkStringToKafkaSerializer(ConfStrings.FLINK_QUERY1_WEEKLY_OUT_TOPIC.getString()),
@@ -45,7 +46,7 @@ public class Query1 {
                 .window(new MonthlyTumblingEventTimeWindow(1, 0, WindowStagger.ALIGNED)) //monthly tumbling window
                 .aggregate(new ShipAvgAggregator(), new ShipAvgProcessWindow())
                 .name("query1-monthly-window-avg")
-                .map(Query1Operators.ExportOutcomeToString())
+                .map(QueryOperators.ExportQuery1OutcomeToString())
                 // write the output string to the correct topic in kafka
                 .addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY1_MONTHLY_OUT_TOPIC.getString(),
                         new FlinkStringToKafkaSerializer(ConfStrings.FLINK_QUERY1_MONTHLY_OUT_TOPIC.getString()),

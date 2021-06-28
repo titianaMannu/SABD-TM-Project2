@@ -61,7 +61,5 @@
             <artifactId>flink-clients_2.12</artifactId>
             <version>1.13.0</version>
         </dependency>
-
-
     </dependencies>
 </project>

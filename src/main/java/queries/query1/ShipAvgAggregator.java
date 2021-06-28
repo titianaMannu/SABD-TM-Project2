@@ -33,6 +33,6 @@ public class ShipAvgAggregator implements AggregateFunction<ShipInfo, ShipAvgAcc
     @Override
     public ShipAvgAccum merge(ShipAvgAccum acc1, ShipAvgAccum acc2) {
         acc2.getStateMap().forEach((k, v) -> acc1.add(k, v.getDays(), v.getShip_total()));
-        return null;
+        return acc1;
     }
 }

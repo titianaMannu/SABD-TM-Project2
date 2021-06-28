@@ -1,10 +1,11 @@
-package queries.query1;
+package queries.operators;
 
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
+import queries.query1.ShipAvgOut;
 import scala.Serializable;
 
 import utils.ShipInfo;
@@ -14,9 +15,8 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Query1Operators implements Serializable {
+public class QueryOperators implements Serializable {
 
-    private static final double[] westernSea = {-6.0, 11.734}; // western mediterranean
     private static final Double initLatitude = 32.0;
     private static final Double endLatitude = 45.0;
     private static final Double initLongitude = -6.0;
@@ -47,56 +47,31 @@ public class Query1Operators implements Serializable {
         return new FilterFunction<ShipInfo>() {
             @Override
             public boolean filter(ShipInfo shipInfo) throws Exception {
-                return isWesternMediterranean(shipInfo);
+                return shipInfo.isWesternMediterranean();
             }
         };
     }
 
-    public static boolean isWesternMediterranean(ShipInfo shipInfo) {
-        return shipInfo.getLON() >= westernSea[0] && shipInfo.getLON() <= westernSea[1];
-    }
+
 
     public static MapFunction<ShipInfo,  ShipInfo> computeCellId() {
         return new MapFunction<ShipInfo,  ShipInfo>() {
             @Override
             public ShipInfo map(ShipInfo shipInfo) throws Exception {
-                char label = 'A';
-                Double i = initLatitude;
-                int LATPosition = 0;
-                while (i < endLatitude) {
-                    if (shipInfo.getLAT() >= i && shipInfo.getLAT() < i + stepLat) {
-                        break;
-                    }
-                    LATPosition++;
-                    i += stepLat;
-                }
-
-                Double j = initLongitude;
-                int LONPosition = 1;
-                while (j < endLongitude) {
-                    if (shipInfo.getLON() >= j && shipInfo.getLON() < j + stepLon) {
-                        break;
-                    }
-                    LONPosition++;
-                    j += stepLon;
-                }
-
-                label += LATPosition;
-                String cellID = "" + label + LONPosition;
-                shipInfo.setCellId(cellID);
-                return  shipInfo;
+                 Navigator.findCellID(shipInfo);
+                 Navigator.setSea(shipInfo);
+                 return shipInfo;
             }
         };
     }
 
-    public static MapFunction<ShipAvgOut, String> ExportOutcomeToString() {
+    public static MapFunction<ShipAvgOut, String> ExportQuery1OutcomeToString() {
         return new MapFunction<ShipAvgOut, String>() {
             @Override
             public String map(ShipAvgOut shipAvgOut) {
                 StringBuilder builder = new StringBuilder();
                 builder.append(shipAvgOut.getStartWindowDate()).append(",");
                 builder.append(shipAvgOut.getCellId());
-               // shipAvgOut.getResultMap().forEach((k, v) -> builder.append(",").append(k).append(",").append(v));
 
                 ShipType[] types = ShipType.values();
                 Arrays.sort(types);
@@ -115,43 +90,5 @@ public class Query1Operators implements Serializable {
         };
     }
 
-
-    //todo leva questa roba!!!!!
-  public static Tuple2<String, ShipInfo> test(ShipInfo shipInfo){
-
-        char label = 'A';
-        Double i = initLatitude;
-        int LATPosition = 0;
-        while (i < endLatitude) {
-
-            if (shipInfo.getLAT() >= i && shipInfo.getLAT() < i + stepLat) {
-                break;
-            }
-            LATPosition++;
-            i += stepLat;
-        }
-
-
-        Double j = initLongitude;
-        int LONPosition = 1;
-        while (j < endLongitude) {
-            if (shipInfo.getLON() >= j && shipInfo.getLON() < j + stepLon) {
-                break;
-            }
-            LONPosition++;
-            j += stepLon;
-        }
-        label += LATPosition;
-        String cellID = "" + label  + LONPosition;
-        return new Tuple2<String, ShipInfo>(cellID, shipInfo);
-
-    }
-
-
-    public static void main(String[] args) throws ParseException {
-        ShipInfo info = new ShipInfo("0xc35c9ebbf48cbb5857a868ce441824d0b2ff783a",99,  -5.9, 35.9109,"10/03/2015 12:15", "0xc35c9_10-03-15 12:xx - 10-03-15 13:26" );
-        System.out.printf(test(info).toString());
-                //0xc35c9ebbf48cbb5857a868ce441824d0b2ff783a	99	8.2	14.56034	35.8109	109	511	10/03/2015 12:15	MARSAXLOKK		0xc35c9_10-03-15 12:xx - 10-03-15 13:26
-    }
 }
 

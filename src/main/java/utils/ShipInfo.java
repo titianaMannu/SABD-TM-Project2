@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 public class ShipInfo implements Serializable {
-
+    private static final double[] westernSea = {-6.0, 11.734}; // western mediterranean
     private final String ship_id; // hexadecimal format
     private final ShipType ship_type;
     private final Double LON; // longitude
@@ -17,11 +17,18 @@ public class ShipInfo implements Serializable {
     private final Date timestamp; // event time
     private final String trip_id; // ship_id + departure_time + arrival_time
     private  String cellId;
+    private  SeaType seaType;
+    private final String hour_range;
 
     public ShipInfo(String ship_id, Integer ship_type, Double LON, Double LAT, String timestamp, String trip_id) throws ParseException {
+        //set a hour category
+        if (isPostMeridian(timestamp)){
+            this.hour_range = "p.m.";
+        }else {
+            this.hour_range = "a.m.";
+        }
 
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
         this.ship_id = ship_id;
         this.ship_type = ShipType.valueOf(ship_type);
         this.LON = LON;
@@ -62,6 +69,18 @@ public class ShipInfo implements Serializable {
         this.cellId = cellId;
     }
 
+    public SeaType getSeaType() {
+        return seaType;
+    }
+
+    public void setSeaType(SeaType seaType) {
+        this.seaType = seaType;
+    }
+
+    public String getHour_range() {
+        return hour_range;
+    }
+
     @Override
     public String toString() {
         return "ShipInfo{" +
@@ -88,5 +107,21 @@ public class ShipInfo implements Serializable {
         return Objects.hash(trip_id);
     }
 
+    public  boolean isWesternMediterranean() {
+        return this.getLON() >= westernSea[0] && this.getLON() <= westernSea[1];
+    }
+
+    private boolean isPostMeridian(String timestamp) throws ParseException {
+
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date dateWithHours = format.parse(timestamp);
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(dateWithHours);
+        cal1.set(Calendar.HOUR_OF_DAY, 11);
+        cal1.set(Calendar.MINUTE, 59);
+        Date endDate = cal1.getTime();
+
+        return dateWithHours.compareTo(endDate) > 0;
+    }
 
 }
