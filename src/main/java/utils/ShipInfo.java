@@ -23,9 +23,9 @@ public class ShipInfo implements Serializable {
     public ShipInfo(String ship_id, Integer ship_type, Double LON, Double LAT, String timestamp, String trip_id) throws ParseException {
         //set a hour category
         if (isPostMeridian(timestamp)){
-            this.hour_range = "p.m.";
+            this.hour_range = ConfStrings.POST_MERIDIAM.getString();
         }else {
-            this.hour_range = "a.m.";
+            this.hour_range = ConfStrings.ANTE_MERIDIAM.getString();
         }
 
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");

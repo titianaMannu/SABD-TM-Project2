@@ -1,4 +1,4 @@
-package queries.query2;
+package queries.query2.window;
 
 import scala.Tuple2;
 import utils.ShipInfo;

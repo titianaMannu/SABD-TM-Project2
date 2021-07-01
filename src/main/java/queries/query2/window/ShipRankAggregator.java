@@ -1,4 +1,4 @@
-package queries.query2;
+package queries.query2.window;
 
 import org.apache.flink.api.common.functions.AggregateFunction;
 import utils.ShipInfo;

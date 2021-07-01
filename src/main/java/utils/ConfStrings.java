@@ -10,7 +10,9 @@ public enum ConfStrings {
     FLINK_QUERY2_MONTHLY_OUT_TOPIC("flink-output-topic-query2-monthly"),
     KAFKA_BROKER1("localhost:9092"),
     KAFKA_BROKER2("localhost:9093"),
-    KAFKA_BROKER3("localhost:9094");
+    KAFKA_BROKER3("localhost:9094"),
+    POST_MERIDIAM("p.m."),
+    ANTE_MERIDIAM("a.m.");
 
 
     private final String string;
