@@ -24,7 +24,7 @@ public class SeaCellAccumulator {
     }
 
     public void add(ShipInfo shipInfo) {
-        if (shipInfo.getHour_range().equals(ConfStrings.ANTE_MERIDIAM.getString())){
+        if (shipInfo.getHour_range().equals(ConfStrings.ANTE_MERIDIAN.getString())){
             this.amTrips.add(shipInfo.getTrip_id());
         }else{
             this.pmTrips.add(shipInfo.getTrip_id());

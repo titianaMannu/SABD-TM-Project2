@@ -6,8 +6,10 @@ import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
 import queries.query1.ShipAvgOut;
+import queries.query2.window2.TripRankOutcome;
 import scala.Serializable;
 
+import utils.ConfStrings;
 import utils.ShipInfo;
 import utils.ShipType;
 
@@ -54,17 +56,6 @@ public class QueryOperators implements Serializable {
 
 
 
-    public static MapFunction<ShipInfo,  ShipInfo> computeCellId() {
-        return new MapFunction<ShipInfo,  ShipInfo>() {
-            @Override
-            public ShipInfo map(ShipInfo shipInfo) throws Exception {
-                 Navigator.findCellID(shipInfo);
-                 Navigator.setSea(shipInfo);
-                 return shipInfo;
-            }
-        };
-    }
-
     public static MapFunction<ShipAvgOut, String> ExportQuery1OutcomeToString() {
         return new MapFunction<ShipAvgOut, String>() {
             @Override
@@ -90,5 +81,26 @@ public class QueryOperators implements Serializable {
         };
     }
 
+    public static MapFunction<TripRankOutcome,String>  ExportQuery2OutcomeToString() {
+        return new MapFunction<TripRankOutcome, String>(){
+
+            @Override
+            public String map(TripRankOutcome tripRankOutcome) throws Exception {
+                StringBuilder builder = new StringBuilder();
+                builder.append(tripRankOutcome.getStartWindowDate()).append(",")
+                        .append(tripRankOutcome.getSea().name()).append(",");
+
+                builder.append(ConfStrings.ANTE_MERIDIAN.getString()).append(", [ ");
+                tripRankOutcome.getAmTripRank().forEach(cellID -> builder.append(cellID).append(" "));
+                builder.append("],");
+
+                builder.append(ConfStrings.POST_MERIDIAN.getString()).append(", [ ");
+                tripRankOutcome.getPmTripRank().forEach(cellID -> builder.append(cellID).append(" "));
+                builder.append("]");
+
+                return builder.toString();
+            }
+        };
+    }
 }
 

@@ -2,27 +2,32 @@ package queries.query2.window2;
 
 import utils.SeaType;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class TripRankOutcome {
-    private Date startWindowDate;
+    private String startWindowDate;
     private SeaType sea;
-    private List<String> amTripRank;
-    private List<String> pmTripRank;
+    private final List<String> amTripRank;
+    private final List<String> pmTripRank;
 
     public TripRankOutcome() {
         this.amTripRank = new ArrayList<>();
         this.pmTripRank = new ArrayList<>();
     }
 
-    public Date getStartWindowDate() {
+    public String getStartWindowDate() {
         return startWindowDate;
     }
 
-    public void setStartWindowDate(Date startWindowDate) {
-        this.startWindowDate = startWindowDate;
+    public void setStartWindowDate(Date startWindowDate) throws ParseException {
+        DateFormat formater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String sDate = formater.format(startWindowDate);
+        this.startWindowDate = sDate;
     }
 
     public SeaType getSea() {

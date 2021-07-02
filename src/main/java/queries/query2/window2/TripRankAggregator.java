@@ -22,9 +22,14 @@ public class TripRankAggregator implements AggregateFunction<SeaCellOutcome, Tri
         tripRankAccum.getAmTotalPerCellId().sort((o1, o2) -> o2.f1.compareTo(o1.f1));
         tripRankAccum.getPmTotalPerCellId().sort((o1, o2) -> o2.f1.compareTo(o1.f1));
         long rankDegree = 3L;
-        for (int i = 0; i< rankDegree; i++){
-            tripRankOutcome.addAmTrip(tripRankAccum.getAmTotalPerCellId().get(i).f0);
-            tripRankOutcome.addPmTrip(tripRankAccum.getPmTotalPerCellId().get(i).f0);
+        try {
+            for (int i = 0; i < rankDegree; i++) {
+                tripRankOutcome.addAmTrip(tripRankAccum.getAmTotalPerCellId().get(i).f0);
+                tripRankOutcome.addPmTrip(tripRankAccum.getPmTotalPerCellId().get(i).f0);
+            }
+        }catch(IndexOutOfBoundsException e){
+            // too many trips
+            return tripRankOutcome;
         }
         return tripRankOutcome;
     }

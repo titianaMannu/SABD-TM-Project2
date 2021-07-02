@@ -34,7 +34,7 @@ public class KafkaCustomConsumer implements Runnable {
      * @return the created consumer
      */
     private Consumer<String, String> createConsumer() {
-        Properties props = KafkaClusterConfig.getKafkaCustomConsumerProperties(CONSUMER_GROUP_ID);
+        Properties props = KafkaConfigurations.getKafkaCustomConsumerProperties(CONSUMER_GROUP_ID);
         return new org.apache.kafka.clients.consumer.KafkaConsumer<>(props);
     }
 
@@ -118,7 +118,7 @@ public class KafkaCustomConsumer implements Runnable {
             // ignored
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Could not export result to " + path);
+            System.err.println("Could not write result to " + path);
         } finally {
             // close consumer
             consumer.close();

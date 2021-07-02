@@ -1,12 +1,9 @@
-import kafka_utils.KafkaSingleProducer;
+import kafka_utils.KafkaCustomProducer;
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,7 +24,7 @@ public class ProducerRunner {
     public static void main(String[] args) {
 
         // create producer
-        KafkaSingleProducer producer = new KafkaSingleProducer();
+        KafkaCustomProducer producer = new KafkaCustomProducer();
 
         String line;
         Long eventTime;

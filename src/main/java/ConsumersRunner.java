@@ -1,5 +1,5 @@
 
-import kafka_utils.KafkaClusterConfig;
+import kafka_utils.KafkaConfigurations;
 import kafka_utils.KafkaCustomConsumer;
 import utils.OutputUtils;
 
@@ -23,9 +23,9 @@ public class ConsumersRunner {
 
         int id = 0;
         // launch Flink topics consumers
-        for (int i = 0; i < KafkaClusterConfig.FLINK_TOPICS.length; i++) {
+        for (int i = 0; i < KafkaConfigurations.FLINK_TOPICS.length; i++) {
             KafkaCustomConsumer consumer = new KafkaCustomConsumer(id,
-                    KafkaClusterConfig.FLINK_TOPICS[i],
+                    KafkaConfigurations.FLINK_TOPICS[i],
                     OutputUtils.FLINK_OUTPUT_FILES[i], OutputUtils.FLINK_HEADERS[i]);
             consumers.add(consumer);
             new Thread(consumer).start();

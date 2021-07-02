@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * Class with all the topics' name and the getter for all the kind of properties
  */
-public class KafkaClusterConfig {
+public class KafkaConfigurations {
     // topics
     public static final String FLINK_TOPIC = "flink-topic";
     public static final String[] FLINK_TOPICS = {
@@ -41,22 +41,22 @@ public class KafkaClusterConfig {
      * @return created properties
      */
     public static Properties getFlinkSourceProperties(String consumerGroupId) {
-        Properties props = new Properties();
+        Properties properties = new Properties();
 
         // specify brokers
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         // set consumer group id
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         // start reading from beginning of partition if no offset was created
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, CONSUMER_FIRST_OFFSET);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, CONSUMER_FIRST_OFFSET);
         // exactly once semantic
-        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, ENABLE_CONSUMER_EXACTLY_ONCE);
+        properties.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, ENABLE_CONSUMER_EXACTLY_ONCE);
 
         // key and value deserializers
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
-        return props;
+        return properties;
     }
 
     /**
@@ -66,16 +66,16 @@ public class KafkaClusterConfig {
      * @return created properties
      */
     public static Properties getFlinkSinkProperties(String producerId) {
-        Properties props = new Properties();
+        Properties properties = new Properties();
 
         // specify brokers
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         // set producer id
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, producerId);
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, producerId);
         // exactly once semantic
-        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, ENABLE_PRODUCER_EXACTLY_ONCE);
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, ENABLE_PRODUCER_EXACTLY_ONCE);
 
-        return props;
+        return properties;
     }
 
     /**
@@ -85,22 +85,22 @@ public class KafkaClusterConfig {
      * @return created properties
      */
     public static Properties getKafkaCustomConsumerProperties(String consumerGroupId) {
-        Properties props = new Properties();
+        Properties properties = new Properties();
 
         // specify brokers
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaClusterConfig.KAFKA_BROKERS);
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfigurations.KAFKA_BROKERS);
         // set consumer group id
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         // start reading from beginning of partition if no offset was created
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, KafkaClusterConfig.CONSUMER_FIRST_OFFSET);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, KafkaConfigurations.CONSUMER_FIRST_OFFSET);
         // exactly once semantic
-        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, ENABLE_CONSUMER_EXACTLY_ONCE);
+        properties.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, ENABLE_CONSUMER_EXACTLY_ONCE);
 
         // key and value deserializers
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
-        return props;
+        return properties;
     }
 
     /**
@@ -109,20 +109,20 @@ public class KafkaClusterConfig {
      * @param producerId producer's id
      * @return created properties
      */
-    public static Properties getKafkaSingleProducerProperties(String producerId) {
-        Properties props = new Properties();
+    public static Properties getKafkaCustomProducerProperties(String producerId) {
+        Properties properties = new Properties();
 
         // specify brokers
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         // set producer id
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, producerId);
+        properties.put(ProducerConfig.CLIENT_ID_CONFIG, producerId);
         // exactly once semantic
-        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, ENABLE_PRODUCER_EXACTLY_ONCE);
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, ENABLE_PRODUCER_EXACTLY_ONCE);
 
         // key and value serializers
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-        return props;
+        return properties;
     }
 }

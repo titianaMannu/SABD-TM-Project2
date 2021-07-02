@@ -9,14 +9,14 @@ import java.util.Properties;
 /**
  * Class used to create the producer that will produce tuples as a data stream in a kafka topic
  */
-public class KafkaSingleProducer {
+public class KafkaCustomProducer {
 	private static final String PRODUCER_ID = "single-producer";
 	private final Producer<Long, String> producer;
 
 	/**
 	 * Default constructor that sets the producer
 	 */
-	public KafkaSingleProducer() {
+	public KafkaCustomProducer() {
 		producer = createProducer();
 	}
 
@@ -26,7 +26,7 @@ public class KafkaSingleProducer {
 	 */
 	private static Producer<Long, String> createProducer() {
 		// get the producer properties
-		Properties props = KafkaClusterConfig.getKafkaSingleProducerProperties(PRODUCER_ID);
+		Properties props = KafkaConfigurations.getKafkaCustomProducerProperties(PRODUCER_ID);
 		return new KafkaProducer<>(props);
 	}
 
@@ -38,7 +38,7 @@ public class KafkaSingleProducer {
 	 */
 	public void produce(Long key, String value, Long timestamp) {
 		// no need to put timestamp as key for Flink
-		final ProducerRecord<Long, String> record = new ProducerRecord<>(KafkaClusterConfig.FLINK_TOPIC, null,
+		final ProducerRecord<Long, String> record = new ProducerRecord<>(KafkaConfigurations.FLINK_TOPIC, null,
 				value);
 		//send the records
 		producer.send(record);

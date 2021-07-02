@@ -10,7 +10,7 @@ public class ShipAvgOut {
     private Date startWindowDate;
     private String cellId;
     // <k= shipType, v = avg>
-    private  HashMap<ShipType, Double> resultMap = new HashMap<>();
+    private final HashMap<ShipType, Double> resultMap = new HashMap<>();
 
     public ShipAvgOut() {
     }

@@ -1,4 +1,4 @@
-import kafka_utils.KafkaClusterConfig;
+import kafka_utils.KafkaConfigurations;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
-import queries.query1.Query1;
+import queries.query2.Query2;
 
 
 import java.text.DateFormat;
@@ -30,10 +30,10 @@ public class FlinkMain {
         environment.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         // add the source and handle watermarks
-        Properties props = KafkaClusterConfig.getFlinkSourceProperties(CONSUMER_GROUP_ID);
+        Properties props = KafkaConfigurations.getFlinkSourceProperties(CONSUMER_GROUP_ID);
 
         DataStream<Tuple2<Long, String>> stream = environment
-                .addSource(new FlinkKafkaConsumer<>(KafkaClusterConfig.FLINK_TOPIC, new SimpleStringSchema(), props))
+                .addSource(new FlinkKafkaConsumer<>(KafkaConfigurations.FLINK_TOPIC, new SimpleStringSchema(), props))
                 // extract event timestamp and set it as key
                 .flatMap(new FlatMapFunction<String, Tuple2<Long, String>>() {
                     @Override
@@ -57,7 +57,8 @@ public class FlinkMain {
                 })
                 .name("stream-source");
 
-        Query1.buildTopology(stream);
+      //  Query1.buildTopology(stream);
+        Query2.buildTopology(stream);
 
         try {
             System.out.println(environment.getExecutionPlan());

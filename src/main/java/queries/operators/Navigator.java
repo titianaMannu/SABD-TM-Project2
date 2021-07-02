@@ -2,9 +2,9 @@ package queries.operators;
 
 
 import utils.SeaType;
-import utils.ShipInfo;
 
 public class Navigator {
+    private static final double[] westernSea = {-6.0, 11.734}; // western mediterranean
     private static final Double initLatitude = 32.0;
     private static final Double endLatitude = 45.0;
     private static final Double initLongitude = -6.0;
@@ -12,43 +12,25 @@ public class Navigator {
     private static final Double stepLat = (endLatitude - initLatitude) / 10.0;
     private static final Double stepLon = (endLongitude - initLongitude) / 40.0;
 
-    public static void findCellID(ShipInfo shipInfo) {
+    public static String findCellID(Double latitude, Double longitude) {
         char label = 'A';
-        Double i = initLatitude;
-        int LATPosition = 0;
-        while (i < endLatitude) {
-
-            if (shipInfo.getLAT() >= i && shipInfo.getLAT() < i + stepLat) {
-                break;
-            }
-            LATPosition++;
-            i += stepLat;
-        }
-
-
-        Double j = initLongitude;
-        int LONPosition = 1;
-        while (j < endLongitude) {
-            if (shipInfo.getLON() >= j && shipInfo.getLON() < j + stepLon) {
-                break;
-            }
-            LONPosition++;
-            j += stepLon;
-        }
-
+        int LATPosition = (int) ((latitude - initLatitude)/stepLat);
+        int LONPosition = (int) (1 + (longitude - initLongitude)/stepLon);
         label += LATPosition;
-        String cellID = "" + label + LONPosition;
-        //setting cell id
-        shipInfo.setCellId(cellID);
 
+        return "" + label + LONPosition;
     }
 
-    public static void  setSea(ShipInfo shipInfo){
+    public static SeaType findSea(Double longitude){
         //set sea type
-        if(shipInfo.isWesternMediterranean()){
-            shipInfo.setSeaType(SeaType.WESTERN_MEDITERRANEAN_SEA);
+        if(isWesternMediterranean(longitude)){
+            return SeaType.WESTERN_MEDITERRANEAN_SEA;
         }else {
-            shipInfo.setSeaType(SeaType.EAST_MEDITERRANEAN_SEA);
+            return SeaType.EAST_MEDITERRANEAN_SEA;
         }
+    }
+
+    public  static boolean isWesternMediterranean(Double longitude) {
+        return longitude >= westernSea[0] && longitude <= westernSea[1];
     }
 }

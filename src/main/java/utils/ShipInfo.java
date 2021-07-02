@@ -1,5 +1,6 @@
 package utils;
 
+import queries.operators.Navigator;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,23 +10,23 @@ import java.util.Date;
 import java.util.Objects;
 
 public class ShipInfo implements Serializable {
-    private static final double[] westernSea = {-6.0, 11.734}; // western mediterranean
+
     private final String ship_id; // hexadecimal format
     private final ShipType ship_type;
     private final Double LON; // longitude
     private final Double LAT; // latitude
     private final Date timestamp; // event time
     private final String trip_id; // ship_id + departure_time + arrival_time
-    private  String cellId;
-    private  SeaType seaType;
+    private final String cellId;
+    private final SeaType seaType;
     private final String hour_range;
 
     public ShipInfo(String ship_id, Integer ship_type, Double LON, Double LAT, String timestamp, String trip_id) throws ParseException {
         //set a hour category
         if (isPostMeridian(timestamp)){
-            this.hour_range = ConfStrings.POST_MERIDIAM.getString();
+            this.hour_range = ConfStrings.POST_MERIDIAN.getString();
         }else {
-            this.hour_range = ConfStrings.ANTE_MERIDIAM.getString();
+            this.hour_range = ConfStrings.ANTE_MERIDIAN.getString();
         }
 
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -35,6 +36,12 @@ public class ShipInfo implements Serializable {
         this.LAT = LAT;
         this.timestamp =  format.parse(timestamp);
         this.trip_id = trip_id;
+        this.seaType = Navigator.findSea(LON);
+        this.cellId =  Navigator.findCellID(LAT, LON);
+    }
+
+    public boolean isWesternMediterranean(){
+        return this.seaType.equals(SeaType.WESTERN_MEDITERRANEAN_SEA);
     }
 
     public String getShip_id() {
@@ -65,16 +72,8 @@ public class ShipInfo implements Serializable {
         return cellId;
     }
 
-    public void setCellId(String cellId) {
-        this.cellId = cellId;
-    }
-
     public SeaType getSeaType() {
         return seaType;
-    }
-
-    public void setSeaType(SeaType seaType) {
-        this.seaType = seaType;
     }
 
     public String getHour_range() {
@@ -107,9 +106,6 @@ public class ShipInfo implements Serializable {
         return Objects.hash(trip_id);
     }
 
-    public  boolean isWesternMediterranean() {
-        return this.getLON() >= westernSea[0] && this.getLON() <= westernSea[1];
-    }
 
     private boolean isPostMeridian(String timestamp) throws ParseException {
 
@@ -120,8 +116,7 @@ public class ShipInfo implements Serializable {
         cal1.set(Calendar.HOUR_OF_DAY, 11);
         cal1.set(Calendar.MINUTE, 59);
         Date endDate = cal1.getTime();
-
-        return dateWithHours.compareTo(endDate) > 0;
+        return dateWithHours.after(endDate);
     }
 
 }

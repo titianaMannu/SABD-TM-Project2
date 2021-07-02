@@ -4,7 +4,7 @@ import utils.SeaType;
 
 import java.util.Date;
 
-import static utils.ConfStrings.ANTE_MERIDIAM;
+import static utils.ConfStrings.ANTE_MERIDIAN;
 
 public class SeaCellOutcome {
     private Date startWindowDate;
@@ -19,7 +19,7 @@ public class SeaCellOutcome {
     }
 
     public void addTotal(String hour_range, Integer val) {
-        if (hour_range.equals(ANTE_MERIDIAM.getString())) {
+        if (hour_range.equals(ANTE_MERIDIAN.getString())) {
             this.amTrips += val;
         } else {
             this.pmTrips += val;

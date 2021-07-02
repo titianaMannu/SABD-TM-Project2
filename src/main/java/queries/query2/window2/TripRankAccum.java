@@ -20,7 +20,7 @@ public class TripRankAccum {
 
     public void add(SeaCellOutcome seaCellOutcome) {
         this.amTotalPerCellId.add(new Tuple2<>(seaCellOutcome.getCellId(), seaCellOutcome.getAmTrips()));
-        this.amTotalPerCellId.add(new Tuple2<>(seaCellOutcome.getCellId(), seaCellOutcome.getPmTrips()));
+        this.pmTotalPerCellId.add(new Tuple2<>(seaCellOutcome.getCellId(), seaCellOutcome.getPmTrips()));
     }
 
     public void addAM(List<Tuple2<String, Integer>> am) {
