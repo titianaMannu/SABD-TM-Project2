@@ -9,16 +9,21 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Used for implementing ProcessWindowFunction with Incremental Aggregation
+ */
 public class SeaCellProcessWindowFunction extends ProcessWindowFunction<SeaCellOutcome, SeaCellOutcome,  String, TimeWindow> {
     @Override
     public void process( String key, Context context, Iterable<SeaCellOutcome> iterable, Collector<SeaCellOutcome> collector) throws Exception {
         SeaCellOutcome seaCellOutcome = iterable.iterator().next();
+        //set start window date
         seaCellOutcome.setStartWindowDate(new Date(context.window().getStart()));
         List<String> keys = Arrays.asList(key.split(":"));
+        //set sea
         seaCellOutcome.setSea(SeaType.valueOf(keys.get(0)));
+        //set cellId
         seaCellOutcome.setCellId(keys.get(1));
+        //collect outcomes
         collector.collect(seaCellOutcome);
     }
-
-
 }

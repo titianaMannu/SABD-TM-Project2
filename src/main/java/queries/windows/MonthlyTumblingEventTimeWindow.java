@@ -5,7 +5,13 @@ import org.apache.flink.streaming.api.windowing.assigners.WindowStagger;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import java.util.*;
 
+/**
+ * This class extends a TumblingEventTimeWindow.
+ * Explicit declaration of the start date which is aligned with the first day of a month based on the event time.
+ * Explicit declaration of the end date which is aligned with the end of a month based on the event time.
+ */
 public class MonthlyTumblingEventTimeWindow extends TumblingEventTimeWindows {
+    //default constructor
     public MonthlyTumblingEventTimeWindow(long size, long offset, WindowStagger windowStagger) {
         super(size, offset, windowStagger);
     }

@@ -9,12 +9,12 @@ import java.nio.charset.StandardCharsets;
  * Scope: Flink
  * Class used to serialize string representing Flink's output to publish on Kafka
  */
-public class FlinkStringToKafkaSerializer implements KafkaSerializationSchema<String> {
+public class FlinkToKafkaSerializer implements KafkaSerializationSchema<String> {
 
 	// topic where the string will be published to
 	private final String topic;
 
-	public FlinkStringToKafkaSerializer(String topic) {
+	public FlinkToKafkaSerializer(String topic) {
 		super();
 		this.topic = topic;
 	}

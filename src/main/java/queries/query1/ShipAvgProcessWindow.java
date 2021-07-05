@@ -6,14 +6,21 @@ import org.apache.flink.util.Collector;
 
 import java.util.Date;
 
-public class ShipAvgProcessWindow extends ProcessWindowFunction<ShipAvgOut, ShipAvgOut, String, TimeWindow> {
+/**
+ * Used for implementing ProcessWindowFunction with Incremental Aggregation that
+ * allows to incrementally compute windows while having access to the
+ * additional window meta information of the ProcessWindowFunction.
+ */
+public class ShipAvgProcessWindow extends ProcessWindowFunction<ShipAvgOutcome, ShipAvgOutcome, String, TimeWindow> {
 
     @Override
-    public void process(String key, Context context, Iterable<ShipAvgOut> iterable, Collector<ShipAvgOut> collector) throws Exception {
-        ShipAvgOut outcome = iterable.iterator().next();
+    public void process(String key, Context context, Iterable<ShipAvgOutcome> iterable, Collector<ShipAvgOutcome> collector) throws Exception {
+        ShipAvgOutcome outcome = iterable.iterator().next();
+        //setting start date
         outcome.setStartWindowDate(new Date(context.window().getStart()));
+        //setting cellId
         outcome.setCellId(key);
-        System.out.println(key);
+        //collects outcomes
         collector.collect(outcome);
     }
 }

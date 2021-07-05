@@ -6,18 +6,29 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class ShipAvgOut {
+/**
+ * Class that contains first query's window processing outcome
+ */
+public class ShipAvgOutcome {
     private Date startWindowDate;
     private String cellId;
     // <k= shipType, v = avg>
     private final HashMap<ShipType, Double> resultMap = new HashMap<>();
 
-    public ShipAvgOut() {
+    //default constructor
+    public ShipAvgOutcome() {
     }
 
-    public void addAvg(ShipType shipType, Double avg){
+    /**
+     * Add a computed value to the hash map
+     *
+     * @param shipType ShipType
+     * @param avg      Double, ship-type avg per cellId
+     */
+    public void addAvg(ShipType shipType, Double avg) {
         this.resultMap.put(shipType, avg);
     }
+
 
     public String getStartWindowDate() {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");

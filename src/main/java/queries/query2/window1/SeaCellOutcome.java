@@ -6,18 +6,27 @@ import java.util.Date;
 
 import static utils.ConfStrings.ANTE_MERIDIAN;
 
+/**
+ * Class that contains first window  processing outcome
+ */
 public class SeaCellOutcome {
     private Date startWindowDate;
     private SeaType sea;
     private String cellId;
-    private int amTrips;
-    private int pmTrips;
+    private int amTrips; //total different trips (ante meridian)
+    private int pmTrips; // total different trips (post meridian)
 
     public SeaCellOutcome() {
         this.pmTrips = 0;
         this.pmTrips = 0;
     }
 
+    /**
+     * Add the total trips counted based on its hour range
+     *
+     * @param hour_range am, pm
+     * @param val        total
+     */
     public void addTotal(String hour_range, Integer val) {
         if (hour_range.equals(ANTE_MERIDIAN.getString())) {
             this.amTrips += val;

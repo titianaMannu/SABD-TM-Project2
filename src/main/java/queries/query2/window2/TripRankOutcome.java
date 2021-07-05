@@ -9,15 +9,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class that contains second window processing outcome
+ */
 public class TripRankOutcome {
     private String startWindowDate;
     private SeaType sea;
-    private final List<String> amTripRank;
-    private final List<String> pmTripRank;
+    private final List<String> amCellTripRank; // am (cellsId) rank
+    private final List<String> pmCellTripRank; // pm (cellsId) rank
 
     public TripRankOutcome() {
-        this.amTripRank = new ArrayList<>();
-        this.pmTripRank = new ArrayList<>();
+        this.amCellTripRank = new ArrayList<>();
+        this.pmCellTripRank = new ArrayList<>();
     }
 
     public String getStartWindowDate() {
@@ -25,8 +28,8 @@ public class TripRankOutcome {
     }
 
     public void setStartWindowDate(Date startWindowDate) throws ParseException {
-        DateFormat formater = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String sDate = formater.format(startWindowDate);
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String sDate = formatter.format(startWindowDate);
         this.startWindowDate = sDate;
     }
 
@@ -39,19 +42,29 @@ public class TripRankOutcome {
     }
 
 
-    public List<String> getAmTripRank() {
-        return amTripRank;
+    public List<String> getAmCellTripRank() {
+        return amCellTripRank;
     }
 
-    public void addAmTrip(String tripId) {
-        this.amTripRank.add(tripId);
+    /**
+     * add a cellId to the outcome rank
+     *
+     * @param cellId string representing a cell
+     */
+    public void addAmCell(String cellId) {
+        this.amCellTripRank.add(cellId);
     }
 
-    public List<String> getPmTripRank() {
-        return pmTripRank;
+    public List<String> getPmCellTripRank() {
+        return pmCellTripRank;
     }
 
-    public void addPmTrip(String tripId) {
-        this.pmTripRank.add(tripId);
+    /**
+     * add a cellId to the outcome rank
+     *
+     * @param cellId string representing a cell
+     */
+    public void addPmCell(String cellId) {
+        this.pmCellTripRank.add(cellId);
     }
 }
