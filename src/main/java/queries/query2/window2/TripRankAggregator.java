@@ -35,7 +35,7 @@ public class TripRankAggregator implements AggregateFunction<SeaCellOutcome, Tri
     @Override
     public TripRankOutcome getResult(TripRankAccum tripRankAccum) {
         TripRankOutcome tripRankOutcome = new TripRankOutcome();
-        // Sort in descending order
+        // Sort in descending order based on the total_trips
         tripRankAccum.getAmTotalPerCellId().sort((o1, o2) -> o2.f1.compareTo(o1.f1));
         tripRankAccum.getPmTotalPerCellId().sort((o1, o2) -> o2.f1.compareTo(o1.f1));
         //ranking degree = 3
