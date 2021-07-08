@@ -1,5 +1,6 @@
 package queries.query2;
 
+import benchmarking.BenchmarkSink;
 import kafka_utils.FlinkToKafkaSerializer;
 import kafka_utils.KafkaConfigurations;
 import org.apache.flink.api.java.functions.KeySelector;
@@ -26,7 +27,7 @@ public class Query2 {
 
         /* key by sea and cellId; notes that sea information is redundant because it is a consequence of the cellId
            but it is specified to be easily recovered later on. */
-        stream.keyBy(new KeySelector<ShipInfo, String>() {
+        DataStream<String> outputStreamWeekly = stream.keyBy(new KeySelector<ShipInfo, String>() {
             @Override
             public String getKey(ShipInfo shipInfo) throws Exception {
                 // Sea:CellId
@@ -39,7 +40,7 @@ public class Query2 {
                 //ProcessWindowFunction with Incremental Aggregation
                 .aggregate(new SeaCellAggregator(), new SeaCellProcessWindowFunction())
                 .name("stream-query2-weekly-counter-window")
-                //key by sea easily recovered from the outcome of the first window
+                //key by sea that is easily recovered from the outcome of the first window
                 .keyBy(new KeySelector<SeaCellOutcome, String>() {
                     @Override
                     public String getKey(SeaCellOutcome seaCellOutcome) throws Exception {
@@ -54,16 +55,20 @@ public class Query2 {
                 .name("stream-query2-weekly-rank-window")
                 //map window outcome to a proper string
                 .map(QueryOperators.ExportQuery2OutcomeToString())
-                .name("stream-query2-weekly-mapToString")
-                // write the output string to the correct topic in kafka
-                .addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY2_WEEKLY_OUT_TOPIC.getString(),
-                        new FlinkToKafkaSerializer(ConfStrings.FLINK_QUERY2_WEEKLY_OUT_TOPIC.getString()),
-                        KafkaConfigurations.getFlinkSinkProperties("producer" + ConfStrings.FLINK_QUERY2_WEEKLY_OUT_TOPIC.getString()),
-                        FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
+                .name("stream-query2-weekly-mapToString");
+
+        // write the output string to the correct topic in kafka
+        outputStreamWeekly.addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY2_WEEKLY_OUT_TOPIC.getString(),
+                new FlinkToKafkaSerializer(ConfStrings.FLINK_QUERY2_WEEKLY_OUT_TOPIC.getString()),
+                KafkaConfigurations.getFlinkSinkProperties("producer" + ConfStrings.FLINK_QUERY2_WEEKLY_OUT_TOPIC.getString()),
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
                 .name("query2-weekly-rank-sink");
 
+        outputStreamWeekly.addSink(new BenchmarkSink("query2-weekly-rank")).name("query2-weekly-bench-sink");
+
+
         //monthly window
-        stream.keyBy(new KeySelector<ShipInfo, String>() {
+        DataStream<String> outputStreamMonthly = stream.keyBy(new KeySelector<ShipInfo, String>() {
             @Override
             public String getKey(ShipInfo shipInfo) throws Exception {
                 return shipInfo.getSeaType().name() + ":" + shipInfo.getCellId();
@@ -89,12 +94,15 @@ public class Query2 {
                 .name("stream-query2-monthly-rank-window")
                 //map window outcome to a proper string
                 .map(QueryOperators.ExportQuery2OutcomeToString())
-                .name("stream-query2-monthly-mapToString")
-                // write the output string to the correct topic in kafka
-                .addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY2_MONTHLY_OUT_TOPIC.getString(),
-                        new FlinkToKafkaSerializer(ConfStrings.FLINK_QUERY2_MONTHLY_OUT_TOPIC.getString()),
-                        KafkaConfigurations.getFlinkSinkProperties("producer" + ConfStrings.FLINK_QUERY2_MONTHLY_OUT_TOPIC.getString()),
-                        FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
+                .name("stream-query2-monthly-mapToString");
+
+        // write the output string to the correct topic in kafka
+        outputStreamMonthly.addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY2_MONTHLY_OUT_TOPIC.getString(),
+                new FlinkToKafkaSerializer(ConfStrings.FLINK_QUERY2_MONTHLY_OUT_TOPIC.getString()),
+                KafkaConfigurations.getFlinkSinkProperties("producer" + ConfStrings.FLINK_QUERY2_MONTHLY_OUT_TOPIC.getString()),
+                FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
                 .name("query2-monthly-rank-sink");
+
+        outputStreamMonthly.addSink(new BenchmarkSink("query2-monthly-rank")).name("query2-monthly-bench-sink");
     }
 }

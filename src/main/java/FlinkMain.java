@@ -37,11 +37,11 @@ public class FlinkMain {
         environment.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         // add the source and handle watermarks
-        Properties props = KafkaConfigurations.getFlinkSourceProperties(CONSUMER_GROUP);
+        Properties properties = KafkaConfigurations.getSourceProperties(CONSUMER_GROUP);
 
         DataStream<Tuple2<Long, String>> streamSource = environment
                 //Use Kafka as DataStream source system
-                .addSource(new FlinkKafkaConsumer<>(KafkaConfigurations.FLINK_TOPIC, new SimpleStringSchema(), props))
+                .addSource(new FlinkKafkaConsumer<>(KafkaConfigurations.FLINK_TOPIC, new SimpleStringSchema(), properties))
                 // extract event timestamp and set it as key
                 .flatMap(new FlatMapFunction<String, Tuple2<Long, String>>() {
                     @Override

@@ -18,9 +18,9 @@
     } ]
   }, {
     "id" : 3,
-    "type" : "stream-source",
+    "type" : "stream-source-extractor",
     "pact" : "Operator",
-    "contents" : "stream-source",
+    "contents" : "stream-source-extractor",
     "parallelism" : 8,
     "predecessors" : [ {
       "id" : 2,
@@ -29,9 +29,9 @@
     } ]
   }, {
     "id" : 4,
-    "type" : "stream-query1-decoder",
+    "type" : "stream-query-parser",
     "pact" : "Operator",
-    "contents" : "stream-query1-decoder",
+    "contents" : "stream-query-parser",
     "parallelism" : 8,
     "predecessors" : [ {
       "id" : 3,
@@ -50,35 +50,24 @@
       "side" : "second"
     } ]
   }, {
-    "id" : 6,
-    "type" : "compute-cell-id",
-    "pact" : "Operator",
-    "contents" : "compute-cell-id",
-    "parallelism" : 8,
-    "predecessors" : [ {
-      "id" : 5,
-      "ship_strategy" : "FORWARD",
-      "side" : "second"
-    } ]
-  }, {
-    "id" : 8,
+    "id" : 7,
     "type" : "query1-weekly-window-avg",
     "pact" : "Operator",
     "contents" : "query1-weekly-window-avg",
     "parallelism" : 8,
     "predecessors" : [ {
-      "id" : 6,
+      "id" : 5,
       "ship_strategy" : "HASH",
       "side" : "second"
     } ]
   }, {
-    "id" : 9,
+    "id" : 8,
     "type" : "Map",
     "pact" : "Operator",
     "contents" : "Map",
     "parallelism" : 8,
     "predecessors" : [ {
-      "id" : 8,
+      "id" : 7,
       "ship_strategy" : "FORWARD",
       "side" : "second"
     } ]
@@ -89,7 +78,7 @@
     "contents" : "query1-monthly-window-avg",
     "parallelism" : 8,
     "predecessors" : [ {
-      "id" : 6,
+      "id" : 5,
       "ship_strategy" : "HASH",
       "side" : "second"
     } ]
@@ -105,13 +94,90 @@
       "side" : "second"
     } ]
   }, {
-    "id" : 10,
+    "id" : 17,
+    "type" : "stream-query2-weekly-counter-window",
+    "pact" : "Operator",
+    "contents" : "stream-query2-weekly-counter-window",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 4,
+      "ship_strategy" : "HASH",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 19,
+    "type" : "stream-query2-weekly-rank-window",
+    "pact" : "Operator",
+    "contents" : "stream-query2-weekly-rank-window",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 17,
+      "ship_strategy" : "HASH",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 20,
+    "type" : "stream-query2-weekly-mapToString",
+    "pact" : "Operator",
+    "contents" : "stream-query2-weekly-mapToString",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 19,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 24,
+    "type" : "stream-query2-monthly-counter-window",
+    "pact" : "Operator",
+    "contents" : "stream-query2-monthly-counter-window",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 4,
+      "ship_strategy" : "HASH",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 26,
+    "type" : "stream-query2-monthly-rank-window",
+    "pact" : "Operator",
+    "contents" : "stream-query2-monthly-rank-window",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 24,
+      "ship_strategy" : "HASH",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 27,
+    "type" : "stream-query2-monthly-mapToString",
+    "pact" : "Operator",
+    "contents" : "stream-query2-monthly-mapToString",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 26,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 9,
     "type" : "Sink: query1-weekly-avg-sink",
     "pact" : "Data Sink",
     "contents" : "Sink: query1-weekly-avg-sink",
     "parallelism" : 8,
     "predecessors" : [ {
-      "id" : 9,
+      "id" : 8,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 10,
+    "type" : "Sink: query1-weekly-bench-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query1-weekly-bench-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 8,
       "ship_strategy" : "FORWARD",
       "side" : "second"
     } ]
@@ -123,6 +189,61 @@
     "parallelism" : 8,
     "predecessors" : [ {
       "id" : 13,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 15,
+    "type" : "Sink: query1-monthly-bench-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query1-monthly-bench-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 13,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 21,
+    "type" : "Sink: query2-weekly-rank-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query2-weekly-rank-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 20,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 22,
+    "type" : "Sink: query2-weekly-bench-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query2-weekly-bench-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 20,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 28,
+    "type" : "Sink: query2-monthly-rank-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query2-monthly-rank-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 27,
+      "ship_strategy" : "FORWARD",
+      "side" : "second"
+    } ]
+  }, {
+    "id" : 29,
+    "type" : "Sink: query2-monthly-bench-sink",
+    "pact" : "Data Sink",
+    "contents" : "Sink: query2-monthly-bench-sink",
+    "parallelism" : 8,
+    "predecessors" : [ {
+      "id" : 27,
       "ship_strategy" : "FORWARD",
       "side" : "second"
     } ]

@@ -3,19 +3,21 @@ package kafka_utils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
-import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
- * Class used to create consumers, subscribe them to topics and run them
+ * Usage:
+ * 1. consumer creation
+ * 2. subscription to a topic
+ * 3. run consumers
  */
 public class KafkaCustomConsumer implements Runnable {
     private final static int POLL_WAIT_TIME = 1000;
@@ -29,43 +31,42 @@ public class KafkaCustomConsumer implements Runnable {
     private final String CSVHeader;
 
     /**
-     * Create a new consumer using the properties
+     * used for consumer creation
      *
-     * @return the created consumer
+     * @return an instance of  consumer
      */
     private Consumer<String, String> createConsumer() {
-        Properties props = KafkaConfigurations.getKafkaCustomConsumerProperties(CONSUMER_GROUP_ID);
-        return new org.apache.kafka.clients.consumer.KafkaConsumer<>(props);
+        Properties properties = KafkaConfigurations.getKafkaCustomConsumerProperties(CONSUMER_GROUP_ID);
+        return new KafkaConsumer<>(properties);
     }
 
     /**
      * Subscribe a consumer to a topic
      *
      * @param consumer to be subscribe
-     * @param topic    chosen
+     * @param topic    topic of interest
      */
     private static void subscribeToTopic(Consumer<String, String> consumer, String topic) {
         consumer.subscribe(Collections.singletonList(topic));
     }
 
     /**
-     * Create a parametric consumer based on the arguments
-     *
-     * @param id    consumer's id
-     * @param topic name
-     * @param path  where to store result if it's a flink consumer, null if it isn't
+     * @param id     consumer's id
+     * @param topic  name of the topic
+     * @param path   destination path for the results
+     * @param header csv header
      */
-    public KafkaCustomConsumer(int id, String topic, @Nullable String path, @Nullable String header) {
+    public KafkaCustomConsumer(int id, String topic, String path, String header) {
         CONSUMER_GROUP_ID = "flink" + CONSUMER_GROUP_ID;
-        this.path = Objects.requireNonNull(path);
+        this.path = path;
         this.id = id;
         this.topic = topic;
-        this.CSVHeader = Objects.requireNonNull(header);
+        this.CSVHeader = header;
 
-        // create the consumer
+        // consumer creation
         consumer = createConsumer();
 
-        // subscribe the consumer to the topic
+        // consumer subscription to a topic
         subscribeToTopic(consumer, topic);
     }
 
@@ -75,11 +76,11 @@ public class KafkaCustomConsumer implements Runnable {
     }
 
     /**
-     * Create a consumer that write flink queries' result to the csv in Results directory
+     * Create a consumer that writes results to the csv in the output path
      */
     @SuppressWarnings({"BusyWait", "ResultOfMethodCallIgnored"})
     private void runFlinkConsumer() {
-        System.out.println("Flink Consumer " + CONSUMER_GROUP_ID + "-ID" + id + " running...");
+        System.out.println("Consumer: " + CONSUMER_GROUP_ID + "-ID" + id + " is running...");
         FileWriter writer;
         BufferedWriter bw;
         try {
@@ -88,10 +89,10 @@ public class KafkaCustomConsumer implements Runnable {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(POLL_WAIT_TIME));
 
                 if (!records.isEmpty()) {
+                    //there are records consumed
                     File file = new File(path);
-
                     if (!file.isFile()) {
-                        // creates the file if it does not exist
+                        // creation of the file if it does not exist
                         file.createNewFile();
                         writer = new FileWriter(file, true);
                         bw = new BufferedWriter(writer);
@@ -104,8 +105,8 @@ public class KafkaCustomConsumer implements Runnable {
                     writer = new FileWriter(file, true);
                     bw = new BufferedWriter(writer);
                     for (ConsumerRecord<String, String> record : records) {
-                        bw.append(record.value());
-                        bw.append("\n");
+                        //append all records to the reader
+                        bw.append(record.value()).append("\n");
                     }
 
                     // close both buffered writer and file writer
@@ -115,14 +116,14 @@ public class KafkaCustomConsumer implements Runnable {
             }
 
         } catch (InterruptedException ignored) {
-            // ignored
+            //not print exception
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Could not write result to " + path);
+            System.err.println("Unable to write results to:: " + path);
         } finally {
-            // close consumer
+            // closing consumer
             consumer.close();
-            System.out.println("Flink Consumer " + CONSUMER_GROUP_ID + "-ID" + id + " stopped");
+            System.out.println("Consumer: " + CONSUMER_GROUP_ID + "-ID" + id + " stop.");
         }
     }
 

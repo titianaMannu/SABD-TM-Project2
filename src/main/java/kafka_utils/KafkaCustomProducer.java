@@ -3,49 +3,46 @@ package kafka_utils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-
 import java.util.Properties;
 
 /**
- * Class used to create the producer that will produce tuples as a data stream in a kafka topic
+ *  Used to create the producer that will produce tuples as a data stream to a kafka topic
  */
 public class KafkaCustomProducer {
-	private static final String PRODUCER_ID = "single-producer";
+	private static final String PRODUCER_ID = "single-flink";
 	private final Producer<Long, String> producer;
 
 	/**
-	 * Default constructor that sets the producer
+	 * Default constructor: initialize the producer
 	 */
 	public KafkaCustomProducer() {
 		producer = createProducer();
 	}
 
 	/**
-	 * Create a new kafka producer
-	 * @return the created kafka producer
+	 * kafka producer creation
+	 * @return instance of a  kafka producer
 	 */
 	private static Producer<Long, String> createProducer() {
-		// get the producer properties
+		// retrieve producer properties
 		Properties props = KafkaConfigurations.getKafkaCustomProducerProperties(PRODUCER_ID);
 		return new KafkaProducer<>(props);
 	}
 
 	/**
-	 * Function that publish a message to both the flink's and kafka streams' topic
-	 * @param key needed to set the key in the kafka streams topic for a correctly process
-	 * @param value line to be send
-	 * @param timestamp event time
+	 * publish a message to a flink stream topic
+	 * @param value string message to send
 	 */
-	public void produce(Long key, String value, Long timestamp) {
-		// no need to put timestamp as key for Flink
+	public void produce(String value) {
+		// produce a record for Flink
 		final ProducerRecord<Long, String> record = new ProducerRecord<>(KafkaConfigurations.FLINK_TOPIC, null,
 				value);
-		//send the records
+		//send the record
 		producer.send(record);
 	}
 
 	/**
-	 * Flush and close the producer
+	 * Flush all records and close the flink producer
 	 */
 	public void close() {
 		producer.flush();

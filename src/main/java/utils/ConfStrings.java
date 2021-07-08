@@ -15,7 +15,10 @@ public enum ConfStrings {
     KAFKA_BROKER2("localhost:9093"),
     KAFKA_BROKER3("localhost:9094"),
     POST_MERIDIAN("pm"),
-    ANTE_MERIDIAN("am");
+    ANTE_MERIDIAN("am"),
+    RESULTS_DIR("Results"),
+    PATH_DATASET_SOURCE("data/dataset.csv"),
+    PATH_FAKE_DATASET("data/fake_dataset.CSV");
 
 
     private final String string;

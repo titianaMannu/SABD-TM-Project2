@@ -44,10 +44,12 @@ public class SeaCellAccumulator {
     }
 
     public void mergeAM(HashSet<String> amToMerge) {
+        //duplicates not allowed (HashSet)
         this.amTrips.addAll(amToMerge);
     }
 
     public void mergePM(HashSet<String> pmToMerge) {
+        //duplicates not allowed (HashSet)
         this.pmTrips.addAll(pmToMerge);
     }
 }

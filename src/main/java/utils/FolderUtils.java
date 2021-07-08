@@ -4,13 +4,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Class used to format the queries' outcomes into string
- */
-public class OutputUtils {
 
-	private static final String RESULTS_FOLDER = "Results";
-
+public class FolderUtils {
 
 	/**
 	 * Flink output filepath: query1 && query2
@@ -30,11 +25,11 @@ public class OutputUtils {
 
 	/**
 	 * Scope: Global
-	 * Used to remove old files in Results directory
+	 * Used to clean Results directory
 	 */
 	public static void cleanResultsFolder() {
 		try {
-			FileUtils.cleanDirectory(new File(RESULTS_FOLDER));
+			FileUtils.cleanDirectory(new File(ConfStrings.RESULTS_DIR.getString()));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Could not clean Results directory");

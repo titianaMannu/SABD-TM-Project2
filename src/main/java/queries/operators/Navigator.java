@@ -7,7 +7,7 @@ import utils.SeaType;
  * This class contains functions to identify cellId and Sea buy using geographic coordinates
  */
 public class Navigator {
-    private static final double[] westernSea = {-6.0, 11.734}; // western mediterranean
+    private static final double[] westernSea = {-6.0, 11.733}; // western mediterranean
     private static final Double initLatitude = 32.0;
     private static final Double endLatitude = 45.0;
     private static final Double initLongitude = -6.0;
@@ -26,7 +26,7 @@ public class Navigator {
         char label = 'A';
         //computing correct position
         int LATPosition = (int) ((latitude - initLatitude) / stepLat);
-        int LONPosition = (int) (1 + (longitude - initLongitude) / stepLon);
+        int LONPosition = (int) (1 + ((longitude - initLongitude) / stepLon));
 
         label += LATPosition;
         return "" + label + LONPosition;

@@ -27,7 +27,12 @@ public class ShipAvgAccum {
      * @param counter   value to add
      */
     public void add(ShipType type, HashSet<Date> timestamp, int counter) {
-        this.ShipStatMap.merge(type, new ShipTypeAvgStat(timestamp, counter), (k, v) -> v.addShip(counter, timestamp));
+        ShipTypeAvgStat analysis = this.ShipStatMap.get(type);
+        if (analysis == null) {
+            this.ShipStatMap.put(type, new ShipTypeAvgStat(timestamp, counter));
+        } else {
+            this.ShipStatMap.computeIfPresent(type, (k, v) -> v.addShip(counter, timestamp));
+        }
     }
 
     /**
