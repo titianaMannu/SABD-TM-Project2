@@ -29,6 +29,7 @@ e contenuto nel file /data/dataset.csv per rispondere a delle query di interesse
         export KAFKA_HOME=/usr/local/kafka
         export PATH=$PATH:$KAFKA_HOME/bin:$KAFKA_HOME/sbin
         ```
+    - dare permessi di esecuzione a tutto ciò che è in $KAFKA_HOME/bin
 
 ## Struttura del progetto
 
