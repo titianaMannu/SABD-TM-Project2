@@ -62,9 +62,9 @@
     } ]
   }, {
     "id" : 8,
-    "type" : "Map",
+    "type" : "stream-query1-weekly-mapToString",
     "pact" : "Operator",
-    "contents" : "Map",
+    "contents" : "stream-query1-weekly-mapToString",
     "parallelism" : 8,
     "predecessors" : [ {
       "id" : 7,
@@ -84,9 +84,9 @@
     } ]
   }, {
     "id" : 13,
-    "type" : "Map",
+    "type" : "stream-query1-monthly-mapToString",
     "pact" : "Operator",
-    "contents" : "Map",
+    "contents" : "stream-query1-monthly-mapToString",
     "parallelism" : 8,
     "predecessors" : [ {
       "id" : 12,

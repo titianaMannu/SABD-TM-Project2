@@ -4,7 +4,7 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 
 /**
  * Class used for flink benchmark evaluations.
- * Usage:  ".addSink(new BenchmarkFlinkSink(context))"
+ * Usage:  ".addSink(new BenchmarkSink(context))"
  */
 public class BenchmarkSink implements SinkFunction<String> {
 

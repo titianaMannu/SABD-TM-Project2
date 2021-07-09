@@ -32,7 +32,8 @@ public class Query1 {
                 .aggregate(new ShipAvgAggregator(), new ShipAvgProcessWindow())
                 .name("query1-weekly-window-avg")
                 //map window outcome to a proper string
-                .map(QueryOperators.ExportQuery1OutcomeToString());
+                .map(QueryOperators.ExportQuery1OutcomeToString())
+                .name("stream-query1-weekly-mapToString");
 
         // write the output string to the correct topic in kafka
         outputStreamWeekly.addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY1_WEEKLY_OUT_TOPIC.getString(),
@@ -52,7 +53,8 @@ public class Query1 {
                 .aggregate(new ShipAvgAggregator(), new ShipAvgProcessWindow())
                 .name("query1-monthly-window-avg")
                 //map window outcome to a proper string
-                .map(QueryOperators.ExportQuery1OutcomeToString());
+                .map(QueryOperators.ExportQuery1OutcomeToString())
+                .name("stream-query1-monthly-mapToString");
 
         // write the output string to the correct topic in kafka
         outputStreamMonthly.addSink(new FlinkKafkaProducer<>(ConfStrings.FLINK_QUERY1_MONTHLY_OUT_TOPIC.getString(),
