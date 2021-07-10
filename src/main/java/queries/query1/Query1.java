@@ -43,7 +43,7 @@ public class Query1 {
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
                 .name("query1-weekly-avg-sink");
         //sink for Experimental benchmarking
-        outputStreamWeekly.addSink(new BenchmarkSink("query1-weekly-avg")).name("query1-weekly-bench-sink");
+        outputStreamWeekly.addSink(new BenchmarkSink("query1-weekly-avg")).name("query1-weekly-bench-sink").setParallelism(1);
 
         //monthly window
         DataStream<String> outputStreamMonthly = stream.keyBy(ShipInfo::getCellId) // stream keyed by cellID
@@ -64,7 +64,7 @@ public class Query1 {
                 .name("query1-monthly-avg-sink");
 
         //sink for Experimental benchmarking
-        outputStreamMonthly.addSink(new BenchmarkSink("query1-monthly-avg")).name("query1-monthly-bench-sink");
+        outputStreamMonthly.addSink(new BenchmarkSink("query1-monthly-avg")).name("query1-monthly-bench-sink").setParallelism(1);
     }
 
 }

@@ -175,10 +175,10 @@
     "type" : "Sink: query1-weekly-bench-sink",
     "pact" : "Data Sink",
     "contents" : "Sink: query1-weekly-bench-sink",
-    "parallelism" : 8,
+    "parallelism" : 1,
     "predecessors" : [ {
       "id" : 8,
-      "ship_strategy" : "FORWARD",
+      "ship_strategy" : "REBALANCE",
       "side" : "second"
     } ]
   }, {
@@ -197,10 +197,10 @@
     "type" : "Sink: query1-monthly-bench-sink",
     "pact" : "Data Sink",
     "contents" : "Sink: query1-monthly-bench-sink",
-    "parallelism" : 8,
+    "parallelism" : 1,
     "predecessors" : [ {
       "id" : 13,
-      "ship_strategy" : "FORWARD",
+      "ship_strategy" : "REBALANCE",
       "side" : "second"
     } ]
   }, {
@@ -219,10 +219,10 @@
     "type" : "Sink: query2-weekly-bench-sink",
     "pact" : "Data Sink",
     "contents" : "Sink: query2-weekly-bench-sink",
-    "parallelism" : 8,
+    "parallelism" : 1,
     "predecessors" : [ {
       "id" : 20,
-      "ship_strategy" : "FORWARD",
+      "ship_strategy" : "REBALANCE",
       "side" : "second"
     } ]
   }, {
@@ -241,10 +241,10 @@
     "type" : "Sink: query2-monthly-bench-sink",
     "pact" : "Data Sink",
     "contents" : "Sink: query2-monthly-bench-sink",
-    "parallelism" : 8,
+    "parallelism" : 1,
     "predecessors" : [ {
       "id" : 27,
-      "ship_strategy" : "FORWARD",
+      "ship_strategy" : "REBALANCE",
       "side" : "second"
     } ]
   } ]

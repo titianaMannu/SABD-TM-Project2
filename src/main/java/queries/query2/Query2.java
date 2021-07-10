@@ -64,7 +64,7 @@ public class Query2 {
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
                 .name("query2-weekly-rank-sink");
 
-        outputStreamWeekly.addSink(new BenchmarkSink("query2-weekly-rank")).name("query2-weekly-bench-sink");
+        outputStreamWeekly.addSink(new BenchmarkSink("query2-weekly-rank")).name("query2-weekly-bench-sink").setParallelism(1);
 
 
         //monthly window
@@ -103,6 +103,6 @@ public class Query2 {
                 FlinkKafkaProducer.Semantic.EXACTLY_ONCE))
                 .name("query2-monthly-rank-sink");
 
-        outputStreamMonthly.addSink(new BenchmarkSink("query2-monthly-rank")).name("query2-monthly-bench-sink");
+        outputStreamMonthly.addSink(new BenchmarkSink("query2-monthly-rank")).name("query2-monthly-bench-sink").setParallelism(1);
     }
 }
